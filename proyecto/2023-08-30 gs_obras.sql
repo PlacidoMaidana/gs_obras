@@ -187,7 +187,7 @@ CREATE TABLE `failed_jobs` (
 --
 
 CREATE TABLE `insumos` (
-  `COD_INSUMO` int(11) NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `FAMILIA` varchar(19) DEFAULT NULL,
   `SUB_FAMILIA` int(11) DEFAULT NULL,
   `DESCRIPCION` varchar(50) DEFAULT NULL,
@@ -195,7 +195,7 @@ CREATE TABLE `insumos` (
   `UNIDAD` varchar(40) DEFAULT NULL,
   `PRECIO_UNIT` decimal(19,2) DEFAULT NULL,
   `COD_CLI_PRO` int(11) DEFAULT NULL,
-  `FECHA_PRECIO` int(11) DEFAULT NULL,
+  `FECHA_PRECIO` datetime,
   `CANTIDAD` decimal(15,2) DEFAULT NULL,
   `EXISTENCIA` decimal(9,2) DEFAULT NULL,
   `DATC_CODE` varchar(13) DEFAULT NULL,
@@ -213,7 +213,7 @@ CREATE TABLE `insumos` (
 --
 
 CREATE TABLE `items` (
-  `COD_ITEMS` int(11) NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `COD_CATEGORIA` int(11) DEFAULT NULL,
   `NOMBRE` varchar(250) DEFAULT NULL,
   `DESCRIPCION` varchar(500) DEFAULT NULL,
@@ -231,13 +231,13 @@ CREATE TABLE `items` (
 --
 
 CREATE TABLE `items_presup` (
-  `CODPRESUPITEMS` int(11) NOT NULL,
-  `COD_PRESUP` int(11) NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `COD_PRESUP` int unsigned NOT NULL,
   `ORDEN_RUBRO` tinyint(4) NOT NULL,
   `ORDEN_SUBRUBRO` tinyint(4) NOT NULL,
   `ORDEN_ITEM` tinyint(4) NOT NULL,
   `NIVEL` tinyint(4) DEFAULT NULL,
-  `COD_ITEMS` int(11) NOT NULL,
+  `COD_ITEMS` int unsigned NOT NULL,
   `NOMBRE` varchar(250) DEFAULT NULL,
   `UNIDAD` varchar(20) DEFAULT NULL,
   `CANTIDAD` decimal(11,2) DEFAULT NULL,
@@ -255,9 +255,9 @@ CREATE TABLE `items_presup` (
 --
 
 CREATE TABLE `linea_items` (
-  `COD_LIN_ITEMS` int(11) NOT NULL,
-  `COD_ITEMS` int(11) NOT NULL,
-  `COD_INSUMO` int(11) NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `COD_ITEMS` int unsigned NOT NULL,
+  `COD_INSUMO` int unsigned NOT NULL,
   `CANTIDAD` decimal(11,4) DEFAULT NULL,
   `orden_insumo` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -269,14 +269,14 @@ CREATE TABLE `linea_items` (
 --
 
 CREATE TABLE `linea_items_presup` (
-  `CODPRESUPITEMS` int(11) NOT NULL,
-  `COD_PRESUP` int(11) NOT NULL,
-  `COD_RUBRO` int(11) NOT NULL,
-  `COD_ITEMS` int(11) DEFAULT NULL,
-  `COD_INSUMO` int(11) NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `COD_PRESUP` int unsigned NOT NULL,
+  `COD_RUBRO` int unsigned NOT NULL,
+  `COD_ITEMS` int unsigned NOT NULL,
+  `COD_INSUMO` int unsigned NOT NULL,
   `PRECIO` decimal(11,2) DEFAULT NULL,
   `CANTIDAD` decimal(11,4) DEFAULT NULL,
-  `PADRE` int(11) NOT NULL,
+  `PADRE` int unsigned NOT NULL,
   `TIENE_HIJOS` char(2) DEFAULT NULL,
   `indice` decimal(5,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -604,9 +604,9 @@ INSERT INTO `posts` (`id`, `author_id`, `category_id`, `title`, `seo_title`, `ex
 --
 
 CREATE TABLE `presupuesto` (
-  `COD_PRESUP` int(11) NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `NOMBRE` varchar(500) DEFAULT NULL,
-  `FECHA` int(11) DEFAULT NULL,
+  `FECHA` datetime,
   `MONTO_TOT` decimal(19,2) DEFAULT NULL,
   `MONTO_VENTA` decimal(19,2) DEFAULT NULL,
   `FACTOR_PRECIO_VENTA` decimal(5,2) DEFAULT NULL,
@@ -620,8 +620,8 @@ CREATE TABLE `presupuesto` (
   `forma_envio` varchar(50) DEFAULT NULL,
   `guardado_en` varchar(200) DEFAULT NULL,
   `nro_orden_compra` varchar(20) DEFAULT NULL,
-  `fecha_orden_compra` int(11) DEFAULT NULL,
-  `cod_centrocosto` int(11) DEFAULT NULL,
+  `fecha_orden_compra` datetime,
+  `cod_centrocosto` int unsigned NOT NULL,
   `Pedido_por` varchar(200) DEFAULT NULL,
   `indice_MO` decimal(5,2) DEFAULT NULL,
   `indice_MATERIALES` decimal(5,2) DEFAULT NULL,
@@ -808,29 +808,11 @@ ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
 
---
--- Indices de la tabla `insumos`
---
-ALTER TABLE `insumos`
-  ADD PRIMARY KEY (`COD_INSUMO`);
-
---
--- Indices de la tabla `items`
---
-ALTER TABLE `items`
-  ADD PRIMARY KEY (`COD_ITEMS`);
-
---
--- Indices de la tabla `items_presup`
---
-ALTER TABLE `items_presup`
-  ADD PRIMARY KEY (`CODPRESUPITEMS`);
 
 --
 -- Indices de la tabla `linea_items`
 --
 ALTER TABLE `linea_items`
-  ADD PRIMARY KEY (`COD_LIN_ITEMS`),
   ADD KEY `COD_INSUMO` (`COD_INSUMO`),
   ADD KEY `COD_ITEMS` (`COD_ITEMS`);
 
@@ -838,7 +820,6 @@ ALTER TABLE `linea_items`
 -- Indices de la tabla `linea_items_presup`
 --
 ALTER TABLE `linea_items_presup`
-  ADD PRIMARY KEY (`CODPRESUPITEMS`),
   ADD KEY `COD_INSUMO` (`COD_INSUMO`);
 
 --
@@ -904,11 +885,6 @@ ALTER TABLE `posts`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `posts_slug_unique` (`slug`);
 
---
--- Indices de la tabla `presupuesto`
---
-ALTER TABLE `presupuesto`
-  ADD PRIMARY KEY (`COD_PRESUP`);
 
 --
 -- Indices de la tabla `roles`
@@ -1061,15 +1037,15 @@ ALTER TABLE `data_rows`
 -- Filtros para la tabla `linea_items`
 --
 ALTER TABLE `linea_items`
-  ADD CONSTRAINT `linea_items_ibfk_1` FOREIGN KEY (`COD_INSUMO`) REFERENCES `insumos` (`COD_INSUMO`),
-  ADD CONSTRAINT `linea_items_ibfk_2` FOREIGN KEY (`COD_ITEMS`) REFERENCES `items` (`COD_ITEMS`);
+  ADD CONSTRAINT `linea_items_ibfk_1` FOREIGN KEY (`COD_INSUMO`) REFERENCES `insumos` (`id`),
+  ADD CONSTRAINT `linea_items_ibfk_2` FOREIGN KEY (`COD_ITEMS`) REFERENCES `items` (`id`);
 
 --
 -- Filtros para la tabla `linea_items_presup`
 --
 ALTER TABLE `linea_items_presup`
-  ADD CONSTRAINT `linea_items_presup_ibfk_1` FOREIGN KEY (`COD_INSUMO`) REFERENCES `insumos` (`COD_INSUMO`),
-  ADD CONSTRAINT `linea_items_presup_ibfk_2` FOREIGN KEY (`CODPRESUPITEMS`) REFERENCES `items_presup` (`CODPRESUPITEMS`);
+  ADD CONSTRAINT `linea_items_presup_ibfk_1` FOREIGN KEY (`COD_INSUMO`) REFERENCES `insumos` (`id`),
+  ADD CONSTRAINT `linea_items_presup_ibfk_2` FOREIGN KEY (`COD_PRESUP`) REFERENCES `items_presup` (`id`);
 
 --
 -- Filtros para la tabla `menu_items`
