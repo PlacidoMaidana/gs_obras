@@ -17,6 +17,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!              RUTAS DE ITEMS TECNICOS                                         ! 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Route::get('insumo_elegir', 'App\Http\Controllers\voyager\ItemController@insumo_elegir');
+
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();

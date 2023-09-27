@@ -16,21 +16,25 @@ class Insumo extends Model
         "FAMILIA",
         "SUB_FAMILIA",
         "DESCRIPCION",
-        "NRO_SERIE",
         "UNIDAD",
         "PRECIO_UNIT",
-        "COD_CLI_PRO",
+        "ID_PROVEEDOR",
         "FECHA_PRECIO",
         "CANTIDAD",
-        "EXISTENCIA",
-        "DATC_CODE",
+        "CODIGO_PROVEEDOR", //Código utilizado para vincular con el código que le da el proveedor al insumo, utilizado para la importación 
         "ACTIVO",
         "unidad_compra",
         "factor_conversion",
         "precio_unidad_compra",
-        "cant_cod_serie",
         "createdEat",
         "updated_at",
         "deleted_at", 
     ];
+
+    function lineasItems() {
+        $this->hasMany('App\Models\LineaItem','COD_INSUMO');
+    }
+
+
+
 }

@@ -19,7 +19,6 @@ class Item extends Model
     'UNIDAD',
     'MEMORIADESCRIPTIVA',
     'IMAGEN',
-    'SIN_ANALISIS',
     'BASE_PRECIO',
        
     ];

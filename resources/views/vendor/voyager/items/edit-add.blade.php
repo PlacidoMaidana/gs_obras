@@ -3,7 +3,8 @@
     $add  = is_null($dataTypeContent->getKey());
 @endphp
 
-@extends('voyager::master')
+{{-- @extends('voyager::master') --}}
+@extends('layouts.voyager2')
 
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -109,33 +110,69 @@
 
                         @if ($edit)
                              <!-- Tabla para mostrar las líneas de ítems -->
-                             <table>
-                                <thead>
-                                    <tr>
-                                        <th>INSUMO</th>
-                                        <th>CANTIDAD</th>
-                                        <!-- Otros encabezados de la tabla según tus necesidades -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($item->lineasItem as $linea)
-                                    <tr>
-                                        <td>
-                                            <input type="text" name="lineas[{{ $linea->id }}][COD_INSUMO]" value="{{ $linea->COD_INSUMO }}">
-                                        </td>
-                                        <td>
-                                            <input type="text" name="lineas[{{ $linea->id }}][CANTIDAD]" value="{{ $linea->CANTIDAD }}">
-                                        </td>
-                                        <!-- Otros campos de la línea según tus necesidades -->
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                             
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table" id="Tabla_lineas">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4">INSUMO</th>
+                                                <th colspan="2">CANTIDAD</th>
+                                                <th colspan="2">PRECIO</th>
+                                                <th colspan="2">TOTAL LINEA</th>
+                                                <th colspan="2"></th>
+                                               
+                                                <!-- Otros encabezados de la tabla según tus necesidades -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $contadorLineas=0; ?>
+                                            @foreach($item->lineasItem as $linea)
+                                            <tr id="lineaId_{{ $linea->id }}">
+                                                <td colspan="4">
+                                                    <input  id="COD_INSUMO_{{ $linea->id }}" type="text" name="lineas[{{ $linea->id }}][COD_INSUMO]" value="{{ $linea->COD_INSUMO }}" size="5">
+                                                    <a href="#"  onclick="elejir_insumo({{ $linea->id }})" class="btn btn-primary">
+                                                        <i class="voyager-search"></i>
+                                                    </a> <span  id="DESCRIPCION_{{ $linea->id }}" class="large">{{ $linea->insumo->DESCRIPCION }}</span>
+                                                </td>
+                                                <td colspan="2">
+                                                    <input  type="text" name="lineas[{{ $linea->id }}][CANTIDAD]" value="{{ $linea->CANTIDAD }}">
+                                                </td>
+                                                <td colspan="2">
+                                                    
+                                                    <input type="text" value="{{ $linea->insumo->PRECIO_UNIT }}" readonly>
+                                                </td>
+                                                <td colspan="2">
+                                                    
+                                                    <input type="text" value="{{ $linea->insumo->PRECIO_UNIT * $linea->CANTIDAD }}" readonly>
+                                                </td>
+                                                <td colspan="2">
+                                                    <!-- Botones de acción -->
+                                                      <!-- Botón de eliminación -->
+                                                        <a href="#" class="btn btn-danger" onclick="eliminarLinea({{ $linea->id }})">
+                                                            <i class="voyager-trash"></i>
+                                                        </a>
+                                                    
+                                                    <a href="#" class="btn btn-primary" onclick="nueva_linea()" >
+                                                        <i class="voyager-list-add"></i>
+                                                    </a>
+                                                    <!-- Aquí puedes agregar los botones de acción ocupando 2 columnas -->
+                                                </td>
+                                                <!-- Otros campos de la línea según tus necesidades -->
+                                            </tr>
+                                            <?php $contadorLineas++; ?>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div id="descripcion_insumo"></div>
                         @else
                         <h1>ESTO ES UN NUEVO ITEM</h1>
                         @endif
 
-                       
+                        @include('vendor.voyager.items.edit-add-modal-insumos')                       
                         
                         <div class="panel-footer">
                             @section('submit-buttons')
@@ -256,4 +293,132 @@
             $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
+    <script>
+        //variable global para identificar las lineas de item_detalle
+        var contadorLineas=0;
+      function nueva_linea() {  
+            if (contadorLineas==0) {
+                contadorLineas={{$contadorLineas}};
+            }
+            contadorLineas++;
+
+            // Obtén la tabla de líneas de pedido
+            var tablaLineasPedido = document.getElementById('Tabla_lineas');
+
+            // Crea una nueva fila en la tabla
+            var nuevaFila = tablaLineasPedido.insertRow();
+                    
+            // Asigna un identificador único a la fila basado en contadorLineas
+            var nuevaFilaId = 'lineaId_' + contadorLineas;
+            nuevaFila.id = nuevaFilaId;
+                    nuevaFila.innerHTML='        <td colspan="4">'+
+                                        '            <input  id="COD_INSUMO_'+contadorLineas+'" type="text" name="lineas['+contadorLineas+'][COD_INSUMO]" value="" size="5">'+
+                                        '            <a href="#"  onclick="elejir_insumo('+contadorLineas+')" class="btn btn-primary"> '+
+                                        '                <i class="voyager-search"></i>'+
+                                        '            </a> <span  id="DESCRIPCION_'+contadorLineas+'" class="large"></span>'+
+                                        '        </td>'+
+                                        '        <td colspan="2">'+
+                                        '            <input  type="text" name="lineas['+contadorLineas+'][CANTIDAD]" value="">'+
+                                        '        </td>'+
+                                        '        <td colspan="2">'+
+                                        '            <input type="text" value="{{ $linea->insumo->PRECIO_UNIT }}" readonly>'+
+                                        '        </td>'+
+                                        '        <td colspan="2">'+                                                    
+                                        '            <input type="text" value="{{ $linea->insumo->PRECIO_UNIT * $linea->CANTIDAD }}" readonly>'+
+                                        '        </td>'+
+                                        '        <td colspan="2">'+
+                                        '            <!-- Botones de acción -->'+
+                                        '             <!-- Botón de eliminación -->'  +            
+                                        '               <a href="#" class="btn btn-danger" onclick="eliminarLinea('+contadorLineas+')">'  +              
+                                        '                    <i class="voyager-trash"></i>'+
+                                        '                </a>'+
+                                        '            <a href="#" class="btn btn-primary" onclick="nueva_linea()" >'+
+                                        '                <i class="voyager-list-add"></i>'+
+                                        '            </a>'+
+                                        '            <!-- Aquí puedes agregar los botones de acción ocupando 2 columnas -->'+
+                                        '        </td>'+
+                                        '        <!-- Otros campos de la línea según tus necesidades -->';
+                                        
+                                        
+         
+
+        }
+
+    </script>
+
+<script>
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//!                        LLENAR LA TABLA DE INSUMOS                            ! 
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+     $(document).ready(function() {
+
+        $('#insumosTable').dataTable( {
+             "serverSide": true,
+             "ajax":"{{url('/insumo_elegir')}}",                
+             "columns":[
+                     {data: 'id', name: 'insumos.id'},
+                     {data: 'FAMILIA', name: 'insumos.FAMILIA'},
+                     {data: 'SUB_FAMILIA', name: 'insumos.SUB_FAMILIA'},
+                     {data: 'DESCRIPCION', name: 'insumos.DESCRIPCION'},
+                     {data: 'UNIDAD', name: 'insumos.UNIDAD'},
+					 {data: 'PRECIO_UNIT', name: 'insumos.PRECIO_UNIT'},
+					 {data: 'FECHA_PRECIO', name: 'insumos.FECHA_PRECIO'},
+					 {data: 'CANTIDAD', name: 'insumos.CANTIDAD'},
+					 {data: 'ACTIVO', name: 'insumos.ACTIVO'},
+					 {data: 'unidad_compra', name: 'insumos.unidad_compra'},				 
+					 {data: 'seleccionar', name: 'seleccionar'},				 
+                                              
+                      ]           
+        } );
+    } );
+
+ </script>
+
+ <script>
+   var Global_lineaId=0;
+    function elejir_insumo(lineaId) {
+        Global_lineaId=lineaId;
+    // Actualizar el valor del campo de descripción del insumo específico
+        $('#modal_insumo').modal({show:true});
+
+     }
+ </script> 
+
+<script>
+    //+----------------------------------------------------------------------------------------------------------------+
+    //|            METODO SELECCIONAR DE LA TABLA MODAL                                                                |
+    //+----------------------------------------------------------------------------------------------------------------+
+
+      function selecciona_insumo(id,DESCRIPCION) {   
+          $('#COD_INSUMO_' + Global_lineaId).val(id);  
+          $('#DESCRIPCION_' + Global_lineaId).html(DESCRIPCION);  
+          
+          $('#modal_insumo').modal('hide');
+          
+       }
+    </script>
+
+
+    <script>
+    //+----------------------------------------------------------------------------------------------------------------+
+    //|            METODO PARA ELIMINAR UNA LINEA DE ITEM                                                                |
+    //+----------------------------------------------------------------------------------------------------------------+
+
+
+        function eliminarLinea(lineaId) {
+            // Encuentra la fila con el identificador de línea
+            var fila = document.getElementById('lineaId_' + lineaId);
+        
+            // Si se encontró la fila, elimínala
+            if (fila) {
+                fila.parentNode.removeChild(fila);
+            }
+        }
+
+
+    </script>
+
+
+
 @stop

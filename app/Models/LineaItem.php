@@ -14,7 +14,7 @@ class LineaItem extends Model
     protected $fillable = [
         'id',
         'COD_ITEMS',
-        'COD_INSUMD',
+        'COD_INSUMO',
         'CANTIDAD',
         'orden_insumo',
         
@@ -25,5 +25,10 @@ class LineaItem extends Model
          //return $this->belongsTo(Item::class);
          return $this->belongsTo('App\Models\Item', 'COD_ITEMS'); // Especifica el nombre de la columna de la clave foránea
  
+     }
+
+     public function insumo()  {
+        return $this->belongsTo('App\Models\Insumo','COD_INSUMO');
+        
      }
 }

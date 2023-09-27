@@ -205,6 +205,35 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
         ));
     }
 
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!                             SELECCIONAR INSUMOS                              ! 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+    public function insumo_elegir()
+    {
+       return  datatables()->of(DB::table('insumos')
+            ->select([  'insumos.id',
+                        'insumos.FAMILIA',
+                        'insumos.SUB_FAMILIA',
+                        'insumos.DESCRIPCION',
+                        'insumos.UNIDAD',
+                        'insumos.PRECIO_UNIT',
+                        'insumos.FECHA_PRECIO',
+                        'insumos.CANTIDAD',
+                        'insumos.ACTIVO',
+                        'insumos.unidad_compra',			
+                  ]))
+        ->addColumn('seleccionar',"vendor/voyager/items/boton_seleccionarInsumo")
+        ->rawColumns(['seleccionar'])     
+        ->toJson();
+               
+        
+    }
+
+
+
     //***************************************
     //                _____
     //               |  __ \
@@ -329,7 +358,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
         $item = Item::find($id); // Obtén un item específico por su ID
         // Accede a las líneas de ítems asociadas a este item
         $lineas = $item->lineasItem;
-
+        //dd($lineas[0]->insumo->DESCRIPCION);
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','item','lineas'));
     }
 
