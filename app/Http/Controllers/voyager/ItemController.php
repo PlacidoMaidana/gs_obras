@@ -17,6 +17,7 @@ use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 
 use App\Models\Item;
+use App\Models\LineaItem;
 
 class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 {
@@ -66,9 +67,9 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
         if (strlen($dataType->model_name) != 0) {
             $model = app($dataType->model_name);
 
-            $query = $model::select($dataType->name.'.*');
+            $query = $model::select($dataType->name . '.*');
 
-            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope' . ucfirst($dataType->scope))) {
                 $query->{$dataType->scope}();
             }
 
@@ -87,9 +88,9 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 
             if ($search->value != '' && $search->key && $search->filter) {
                 $search_filter = ($search->filter == 'equals') ? '=' : 'LIKE';
-                $search_value = ($search->filter == 'equals') ? $search->value : '%'.$search->value.'%';
+                $search_value = ($search->filter == 'equals') ? $search->value : '%' . $search->value . '%';
 
-                $searchField = $dataType->name.'.'.$search->key;
+                $searchField = $dataType->name . '.' . $search->key;
                 if ($row = $this->findSearchableRelationshipRow($dataType->rows->where('type', 'relationship'), $search->key)) {
                     $query->whereIn(
                         $searchField,
@@ -107,12 +108,12 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
                 $querySortOrder = (!empty($sortOrder)) ? $sortOrder : 'desc';
                 if (!empty($row)) {
                     $query->select([
-                        $dataType->name.'.*',
-                        'joined.'.$row->details->label.' as '.$orderBy,
+                        $dataType->name . '.*',
+                        'joined.' . $row->details->label . ' as ' . $orderBy,
                     ])->leftJoin(
-                        $row->details->table.' as joined',
-                        $dataType->name.'.'.$row->details->column,
-                        'joined.'.$row->details->key
+                        $row->details->table . ' as joined',
+                        $dataType->name . '.' . $row->details->column,
+                        'joined.' . $row->details->key
                     );
                 }
 
@@ -206,30 +207,29 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
     }
 
 
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!                             SELECCIONAR INSUMOS                              ! 
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!                             SELECCIONAR INSUMOS                              ! 
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
     public function insumo_elegir()
     {
-       return  datatables()->of(DB::table('insumos')
-            ->select([  'insumos.id',
-                        'insumos.FAMILIA',
-                        'insumos.SUB_FAMILIA',
-                        'insumos.DESCRIPCION',
-                        'insumos.UNIDAD',
-                        'insumos.PRECIO_UNIT',
-                        'insumos.FECHA_PRECIO',
-                        'insumos.CANTIDAD',
-                        'insumos.ACTIVO',
-                        'insumos.unidad_compra',			
-                  ]))
-        ->addColumn('seleccionar',"vendor/voyager/items/boton_seleccionarInsumo")
-        ->rawColumns(['seleccionar'])     
-        ->toJson();
-               
-        
+        return  datatables()->of(DB::table('insumos')
+            ->select([
+                'insumos.id',
+                'insumos.FAMILIA',
+                'insumos.SUB_FAMILIA',
+                'insumos.DESCRIPCION',
+                'insumos.UNIDAD',
+                'insumos.PRECIO_UNIT',
+                'insumos.FECHA_PRECIO',
+                'insumos.CANTIDAD',
+                'insumos.ACTIVO',
+                'insumos.unidad_compra',
+            ]))
+            ->addColumn('seleccionar', "vendor/voyager/items/boton_seleccionarInsumo")
+            ->rawColumns(['seleccionar'])
+            ->toJson();
     }
 
 
@@ -262,7 +262,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
             if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
                 $query = $query->withTrashed();
             }
-            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope' . ucfirst($dataType->scope))) {
                 $query = $query->{$dataType->scope}();
             }
             $dataTypeContent = call_user_func([$query, 'findOrFail'], $id);
@@ -324,7 +324,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
             if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
                 $query = $query->withTrashed();
             }
-            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+            if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope' . ucfirst($dataType->scope))) {
                 $query = $query->{$dataType->scope}();
             }
             $dataTypeContent = call_user_func([$query, 'findOrFail'], $id);
@@ -359,12 +359,14 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
         // Accede a las líneas de ítems asociadas a este item
         $lineas = $item->lineasItem;
         //dd($lineas[0]->insumo->DESCRIPCION);
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable','item','lineas'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'item', 'lineas'));
     }
 
     // POST BR(E)AD
     public function update(Request $request, $id)
     {
+
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -374,7 +376,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 
         $model = app($dataType->model_name);
         $query = $model->query();
-        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope' . ucfirst($dataType->scope))) {
             $query = $query->{$dataType->scope}();
         }
         if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
@@ -389,14 +391,39 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
         // Validate fields with ajax
         $val = $this->validateBread($request->all(), $dataType->editRows, $dataType->name, $id)->validate();
 
+        // EL LUGAR PARA MODIFICAR DATOS DEL REGISTRO ANTES QUE SE ACTUALICE
+
+
         // Get fields with images to remove before updating and make a copy of $data
         $to_remove = $dataType->editRows->where('type', 'image')
             ->filter(function ($item, $key) use ($request) {
                 return $request->hasFile($item->field);
             });
-        $original_data = clone($data);
+        $original_data = clone ($data);
 
         $this->insertUpdateData($request, $slug, $dataType->editRows, $data);
+
+//!<<<<<<<<<<<<<<<<<<<<<<<    TRABAJANDO LAS LINEAS   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+       
+        // Obtén las ID de las líneas de ítems a eliminar
+        $item = Item::find($id);
+       // dd($item->lineasItem);
+        $lineasAEliminar = array_diff($item->lineasItem->pluck('id')->toArray(), array_keys($request->input('lineas')));
+
+        // Elimina las líneas de ítems que ya no están asociadas
+        LineaItem::whereIn('id', $lineasAEliminar)->delete();
+
+        // Actualiza o crea las líneas de ítems asociadas
+        foreach ($request->input('lineas') as $lineaId => $lineaData) {
+            $linea = LineaItem::updateOrCreate(['id' => $lineaId],
+             ['CANTIDAD' => $lineaData['CANTIDAD'],  // Actualiza otros campos de la línea según sea necesario
+             'COD_INSUMO' => $lineaData['COD_INSUMO'], 
+             'COD_ITEMS' => $id,              
+             ]
+        
+        
+        );
+        }
 
         // Delete Images
         $this->deleteBreadImages($original_data, $to_remove);
@@ -410,7 +437,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
         }
 
         return $redirect->with([
-            'message'    => __('voyager::generic.successfully_updated')." {$dataType->getTranslatedAttribute('display_name_singular')}",
+            'message'    => __('voyager::generic.successfully_updated') . " {$dataType->getTranslatedAttribute('display_name_singular')}",
             'alert-type' => 'success',
         ]);
     }
@@ -438,8 +465,8 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
         $this->authorize('add', app($dataType->model_name));
 
         $dataTypeContent = (strlen($dataType->model_name) != 0)
-                            ? new $dataType->model_name()
-                            : false;
+            ? new $dataType->model_name()
+            : false;
 
         foreach ($dataType->addRows as $key => $row) {
             $dataType->addRows[$key]['col_width'] = $row->details->width ?? 100;
@@ -460,7 +487,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
             $view = "voyager::$slug.edit-add";
         }
 
-        
+
 
 
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'));
@@ -496,7 +523,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
             }
 
             return $redirect->with([
-                'message'    => __('voyager::generic.successfully_added_new')." {$dataType->getTranslatedAttribute('display_name_singular')}",
+                'message'    => __('voyager::generic.successfully_added_new') . " {$dataType->getTranslatedAttribute('display_name_singular')}",
                 'alert-type' => 'success',
             ]);
         } else {
@@ -533,7 +560,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
         }
 
         $affected = 0;
-        
+
         foreach ($ids as $id) {
             $data = call_user_func([$dataType->model_name, 'findOrFail'], $id);
 
@@ -558,11 +585,11 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 
         $data = $affected
             ? [
-                'message'    => __('voyager::generic.successfully_deleted')." {$displayName}",
+                'message'    => __('voyager::generic.successfully_deleted') . " {$displayName}",
                 'alert-type' => 'success',
             ]
             : [
-                'message'    => __('voyager::generic.error_deleting')." {$displayName}",
+                'message'    => __('voyager::generic.error_deleting') . " {$displayName}",
                 'alert-type' => 'error',
             ];
 
@@ -581,7 +608,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 
         // Get record
         $query = $model->withTrashed();
-        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope' . ucfirst($dataType->scope))) {
             $query = $query->{$dataType->scope}();
         }
         $data = $query->findOrFail($id);
@@ -591,11 +618,11 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
         $res = $data->restore($id);
         $data = $res
             ? [
-                'message'    => __('voyager::generic.successfully_restored')." {$displayName}",
+                'message'    => __('voyager::generic.successfully_restored') . " {$displayName}",
                 'alert-type' => 'success',
             ]
             : [
-                'message'    => __('voyager::generic.error_restoring')." {$displayName}",
+                'message'    => __('voyager::generic.error_restoring') . " {$displayName}",
                 'alert-type' => 'error',
             ];
 
@@ -656,7 +683,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 
                 // Check if we're dealing with a nested array for the case of multiple files
                 if (is_array($fieldData[0])) {
-                    foreach ($fieldData as $index=>$file) {
+                    foreach ($fieldData as $index => $file) {
                         // file type has a different structure than images
                         if (!empty($file['original_name'])) {
                             if ($file['original_name'] == $filename) {
@@ -808,13 +835,13 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
                     if (isset($row->details->thumbnails)) {
                         foreach ($row->details->thumbnails as $thumbnail) {
                             $ext = explode('.', $image);
-                            $extension = '.'.$ext[count($ext) - 1];
+                            $extension = '.' . $ext[count($ext) - 1];
 
                             $path = str_replace($extension, '', $image);
 
                             $thumb_name = $thumbnail->name;
 
-                            $this->deleteFileIfExists($path.'-'.$thumb_name.$extension);
+                            $this->deleteFileIfExists($path . '-' . $thumb_name . $extension);
                         }
                     }
                 }
@@ -844,11 +871,11 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 
         if (empty($dataType->order_column) || empty($dataType->order_display_column)) {
             return redirect()
-            ->route("voyager.{$dataType->slug}.index")
-            ->with([
-                'message'    => __('voyager::bread.ordering_not_set'),
-                'alert-type' => 'error',
-            ]);
+                ->route("voyager.{$dataType->slug}.index")
+                ->with([
+                    'message'    => __('voyager::bread.ordering_not_set'),
+                    'alert-type' => 'error',
+                ]);
         }
 
         $model = app($dataType->model_name);
@@ -938,7 +965,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 
         $this->authorize($method, $model);
 
-        $rows = $dataType->{$method.'Rows'};
+        $rows = $dataType->{$method . 'Rows'};
         foreach ($rows as $key => $row) {
             if ($row->field === $request->input('type')) {
                 $options = $row->details;
@@ -948,7 +975,7 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
                 $additional_attributes = $model->additional_attributes ?? [];
 
                 // Apply local scope if it is defined in the relationship-options
-                if (isset($options->scope) && $options->scope != '' && method_exists($model, 'scope'.ucfirst($options->scope))) {
+                if (isset($options->scope) && $options->scope != '' && method_exists($model, 'scope' . ucfirst($options->scope))) {
                     $model = $model->{$options->scope}();
                 }
 
@@ -963,9 +990,9 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
                         $total_count = $relationshipOptions->count();
                         $relationshipOptions = $relationshipOptions->forPage($page, $on_page);
                     } else {
-                        $total_count = $model->where($options->label, 'LIKE', '%'.$search.'%')->count();
+                        $total_count = $model->where($options->label, 'LIKE', '%' . $search . '%')->count();
                         $relationshipOptions = $model->take($on_page)->skip($skip)
-                            ->where($options->label, 'LIKE', '%'.$search.'%')
+                            ->where($options->label, 'LIKE', '%' . $search . '%')
                             ->get();
                     }
                 } else {
@@ -1037,8 +1064,8 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 
             return !$this->relationIsUsingAccessorAsLabel($item->details);
         })
-        ->pluck('field')
-        ->toArray();
+            ->pluck('field')
+            ->toArray();
     }
 
     protected function relationIsUsingAccessorAsLabel($details)
