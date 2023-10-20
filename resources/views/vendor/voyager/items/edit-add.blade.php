@@ -103,7 +103,8 @@
                             @endfor
 
                         </div><!-- panel-body -->
-
+                        
+                        <?php $contadorLineas = 0; ?> {{-- Usare la variable para contar las lineas de item, tanto en nuevo como update --}}
                         @if ($edit)
                             <!-- Tabla para mostrar las líneas de ítems -->
 
@@ -122,32 +123,33 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php $contadorLineas = 0; ?>
+                                           
                                             @foreach ($item->lineasItem as $linea)
-                                                <tr id="lineaId_{{ $linea->id }}">
+                                                <tr id="lineaId_{{  $contadorLineas }}">
+                                                {{-- <tr id="lineaId_{{ $linea->id }}"> --}}
                                                     <td colspan="4">
-                                                        <input id="COD_INSUMO_{{ $linea->id }}" type="text"
-                                                            name="lineas[{{ $linea->id }}][COD_INSUMO]"
+                                                        <input id="COD_INSUMO_{{  $contadorLineas }}" type="text"
+                                                            name="lineas[{{  $contadorLineas }}][COD_INSUMO]"
                                                             value="{{ $linea->COD_INSUMO }}" size="5">
-                                                        <a href="#" onclick="elejir_insumo({{ $linea->id }})"
+                                                        <a href="#" onclick="elejir_insumo({{  $contadorLineas }})"
                                                             class="btn btn-primary">
                                                             <i class="voyager-search"></i>
-                                                        </a> <span id="DESCRIPCION_{{ $linea->id }}"
+                                                        </a> <span id="DESCRIPCION_{{  $contadorLineas}}"
                                                             class="large">{{ $linea->insumo->DESCRIPCION }}</span>
                                                     </td>
                                                     <td colspan="2">
-                                                        <input type="text" name="lineas[{{ $linea->id }}][CANTIDAD]"
+                                                        <input type="text" id="CANTIDAD_{{$contadorLineas}}" name="lineas[{{  $contadorLineas }}][CANTIDAD]"
                                                             value="{{ $linea->CANTIDAD }}">
                                                     </td>
                                                     <td colspan="2">
 
-                                                        <input type="text" name="lineas[{{ $linea->id }}][PRECIO_UNIT]" value="{{ $linea->insumo->PRECIO_UNIT }}"
+                                                        <input type="text" id="PRECIO_UNIT_{{$contadorLineas}}" name="lineas[{{  $contadorLineas }}][PRECIO_UNIT]" value="{{ $linea->insumo->PRECIO_UNIT }}"
                                                             readonly>
                                                     </td>
                                                         
                                                     <td colspan="2">
 
-                                                        <input type="text" name="lineas[{{ $linea->id }}][TOTAL]"
+                                                        <input type="text" id="TOTAL_{{$contadorLineas}}" name="lineas[{{  $contadorLineas }}][TOTAL]"
                                                             value="{{ $linea->insumo->PRECIO_UNIT * $linea->CANTIDAD }}"
                                                             readonly>
                                                     </td>
@@ -155,18 +157,21 @@
                                                         <!-- Botones de acción -->
                                                         <!-- Botón de eliminación -->
                                                         <a href="#" class="btn btn-danger"
-                                                            onclick="eliminarLinea({{ $linea->id }})">
+                                                            onclick="eliminarLinea({{  $contadorLineas }})">
                                                             <i class="voyager-trash"></i>
                                                         </a>
 
                                                         <a href="#" class="btn btn-primary" onclick="nueva_linea()">
                                                             <i class="voyager-list-add"></i>
                                                         </a>
+                                                        <?php $contadorLineas++;
+                                                        echo $contadorLineas;
+                                                        ?>
                                                         <!-- Aquí puedes agregar los botones de acción ocupando 2 columnas -->
                                                     </td>
                                                     <!-- Otros campos de la línea según tus necesidades -->
                                                 </tr>
-                                                <?php $contadorLineas++; ?>
+                                               
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -176,6 +181,31 @@
                             <div id="descripcion_insumo"></div>
                         @else
                             <h1>ESTO ES UN NUEVO ITEM</h1>
+                             <!-- Tabla para mostrar las líneas de ítems -->
+                             <a href="#" class="btn btn-primary" onclick="nueva_linea()">
+                                <i class="voyager-list-add"></i>
+                             </a>
+                             <div class="row">
+                                <div class="col-12">
+                                    <table class="table" id="Tabla_lineas">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4">INSUMO</th>
+                                                <th colspan="2">CANTIDAD</th>
+                                                <th colspan="2">PRECIO</th>
+                                                <th colspan="2">TOTAL LINEA</th>
+                                                <th colspan="2"></th>
+
+                                                <!-- Otros encabezados de la tabla según tus necesidades -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                           
                         @endif
 
                         @include('vendor.voyager.items.edit-add-modal-insumos')
