@@ -165,7 +165,7 @@
                                                             <i class="voyager-list-add"></i>
                                                         </a>
                                                         <?php $contadorLineas++;
-                                                        echo $contadorLineas;
+                                                        
                                                         ?>
                                                         <!-- Aquí puedes agregar los botones de acción ocupando 2 columnas -->
                                                     </td>
