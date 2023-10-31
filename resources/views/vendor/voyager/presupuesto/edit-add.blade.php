@@ -180,6 +180,9 @@
 
 
                     </form>
+                       
+                    @include('vendor.voyager.presupuesto.edit-add-modal-insumos')
+
 
                     <iframe id="form_target" name="form_target" style="display:none"></iframe>
                     <form id="my_form" action="{{ route('voyager.upload') }}" target="form_target" method="post"
@@ -355,7 +358,39 @@
     }
 </script>
 
+<script>
+    //+----------------------------------------------------------------------------------------------------------------+
+    //|            METODO PARA ELIMINAR UNA LINEA DE ITEM                                                                |
+    //+----------------------------------------------------------------------------------------------------------------+
 
+
+    function eliminarLinea(lineaId) {
+        // Encuentra la fila con el identificador de línea
+        var fila = document.getElementById('lineaId_' + lineaId);
+
+        // Si se encontró la fila, elimínala
+        if (fila) {
+            fila.parentNode.removeChild(fila);
+        }
+    }
+</script>
+
+<script>
+    //+----------------------------------------------------------------------------------------------------------------+
+    //|            METODO PARA MOSTRAR MODAL                                                                |
+    //+----------------------------------------------------------------------------------------------------------------+
+
+    var Global_lineaId = 0;
+    
+    function elejir_insumo(lineaId) {
+        Global_lineaId = lineaId;
+        // Actualizar el valor del campo de descripción del insumo específico
+        $('#modal_insumo').modal({
+            show: true
+        });
+
+    }
+</script>
 
 
 @stop

@@ -450,8 +450,12 @@
 </script>
 
 <script>
-    var Global_lineaId = 0;
+    //+----------------------------------------------------------------------------------------------------------------+
+    //|            METODO PARA MOSTRAR MODAL                                                                |
+    //+----------------------------------------------------------------------------------------------------------------+
 
+    var Global_lineaId = 0;
+    
     function elejir_insumo(lineaId) {
         Global_lineaId = lineaId;
         // Actualizar el valor del campo de descripción del insumo específico
