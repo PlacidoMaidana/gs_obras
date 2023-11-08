@@ -181,7 +181,7 @@
 
                     </form>
                        
-                    @include('vendor.voyager.presupuesto.edit-add-modal-insumos')
+                    @include('vendor.voyager.presupuesto.edit-add-modal-items')
 
 
                     <iframe id="form_target" name="form_target" style="display:none"></iframe>
@@ -391,6 +391,60 @@
 
     }
 </script>
+
+<SCRipt>
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!                        LLENAR LA TABLA DE INSUMOS                            ! 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+$(document).ready(function() {
+
+    $('#insumosTable').dataTable({
+        "serverSide": true,
+        "ajax": "{{ url('/modal_item_elegir') }}",
+        "columns": [{
+                data: 'id',
+                name: 'items.id'
+            },
+            {
+                data: 'nombre',
+                name: 'items.nombre'
+            },
+            {
+                data: 'categoria',
+                name: 'categoria_items.descripcion'
+            },
+            {
+                data: 'descripcion',
+                name: 'items.DESCRIPCION'
+            },
+            {
+                data: 'unidad',
+                name: 'items.unidad'
+            },
+           
+            {
+                data: 'Base_Precio',
+                name: 'items.Base_Precio'
+            },
+            {
+                data: 'Memoria_Descriptiva',
+                name: 'items.MEMORIA_DESCRIPTIVA'
+            },
+            {
+                data: 'Imagen',
+                name: 'items.IMAGEN'
+            },
+            {
+                data: 'seleccionar',
+                name: 'seleccionar'
+            },
+
+        ]
+    });
+});
+</script>
+
 
 
 @stop
