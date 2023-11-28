@@ -27,3 +27,70 @@ Route::get('insumo_elegir', 'App\Http\Controllers\voyager\ItemController@insumo_
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!              BROWSE DE PRESUPUESTOS                                          ! 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+Route::get('/presup_pendientes', function () {     
+    return datatables()->of(DB::table('presupuesto')
+    ->join('clientes_proveedores','presupuesto.id_cliente','=','clientes_proveedores.id')
+    ->join('tipo_presupuestos','presupuesto.id_tipo_obra','=','tipo_presupuestos.id')
+    ->where('presupuesto.estado','=', 'Pendiente')
+    ->select([  'presupuesto.id',
+                 'tipo_presupuestos.tipo_presupuesto as tipo',
+                 'presupuesto.nombre as nombre',
+                'presupuesto.fecha',
+                'clientes_proveedores.razon_social as cliente',
+                'presupuesto.costo_costo as importe_costo',
+                'presupuesto.importe_venta as importe_venta',
+               ]))
+    ->addColumn('check','vendor/voyager/presupuesto/check')
+    ->addColumn('accion','vendor/voyager/presupuesto/acciones')
+    ->rawColumns(['check','accion'])     
+    ->toJson();   
+ 
+ });
+
+
+ Route::get('/presup_aprobados', function () {     
+    return datatables()->of(DB::table('presupuesto')
+    ->join('clientes_proveedores','presupuesto.id_cliente','=','clientes_proveedores.id')
+    ->join('tipo_presupuestos','presupuesto.id_tipo_obra','=','tipo_presupuestos.id')
+    ->where('presupuesto.estado','=', 'Aprobado')
+    ->select([  'presupuesto.id',
+                 'tipo_presupuestos.tipo_presupuesto as tipo',
+                 'presupuesto.nombre as nombre',
+                'presupuesto.fecha',
+                'clientes_proveedores.razon_social as cliente',
+                'presupuesto.costo_costo as importe_costo',
+                'presupuesto.importe_venta as importe_venta',
+               ]))
+    ->addColumn('check','vendor/voyager/presupuesto/check')
+    ->addColumn('accion','vendor/voyager/presupuesto/acciones')
+    ->rawColumns(['check','accion'])     
+    ->toJson();   
+ 
+ });
+
+ 
+Route::get('/presup_rechazados', function () {     
+    return datatables()->of(DB::table('presupuesto')
+    ->join('clientes_proveedores','presupuesto.id_cliente','=','clientes_proveedores.id')
+    ->join('tipo_presupuestos','presupuesto.id_tipo_obra','=','tipo_presupuestos.id')
+    ->where('presupuesto.estado','=', 'Rechazado')
+    ->select([  'presupuesto.id',
+                 'tipo_presupuestos.tipo_presupuesto as tipo',
+                 'presupuesto.nombre as nombre',
+                'presupuesto.fecha',
+                'clientes_proveedores.razon_social as cliente',
+                'presupuesto.costo_costo as importe_costo',
+                'presupuesto.importe_venta as importe_venta',
+               ]))
+    ->addColumn('check','vendor/voyager/presupuesto/check')
+    ->addColumn('accion','vendor/voyager/presupuesto/acciones')
+    ->rawColumns(['check','accion'])     
+    ->toJson();   
+ 
+ });
