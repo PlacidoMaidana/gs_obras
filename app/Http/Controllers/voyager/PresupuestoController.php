@@ -227,7 +227,7 @@ class PresupuestoController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             'items.MEMORIADESCRIPTIVA as Memoria_Descriptiva',
             'items.IMAGEN as Imagen'
         ))
-            ->addColumn('seleccionar', "pato")
+            ->addColumn('seleccionar', "vendor/voyager/presupuesto/boton_seleccionarItem")
             ->rawColumns(['seleccionar'])
             ->toJson();
     }

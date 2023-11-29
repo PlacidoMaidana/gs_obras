@@ -22,7 +22,13 @@ Route::get('/', function () {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Route::get('insumo_elegir', 'App\Http\Controllers\voyager\ItemController@insumo_elegir');
+
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!              RUTAS DE PRESUPUESTOS                                           ! 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Route::get('modal_item_elegir', 'App\Http\Controllers\voyager\PresupuestoController@ModalItem_elegir');
+
 
 
 Route::group(['prefix' => 'admin'], function () {

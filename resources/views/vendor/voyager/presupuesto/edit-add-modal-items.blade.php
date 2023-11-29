@@ -16,7 +16,7 @@
                                                     <div class="card" style="min-width: 70%">
                                                         <img class="card-img-top" src="holder.js/100x180/" alt="">
                                                         <div class="card-body">
-                                                           <h4 class="card-title">Elegir Insumos</h4>
+                                                           <h4 class="card-title">Elegir Items</h4>
                                                            <table id="insumosTable" class="table table-striped table-bordered dt-responsive nowrap" style="width:60%">
                                                             <thead>
                                                               

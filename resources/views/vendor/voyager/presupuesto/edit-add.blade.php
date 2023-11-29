@@ -445,6 +445,33 @@ $(document).ready(function() {
 });
 </script>
 
+<script>
+//+----------------------------------------------------------------------------------------------------------------+
+//|            METODO SELECCIONAR DE LA TABLA MODAL                                                                |
+//+----------------------------------------------------------------------------------------------------------------+
 
+function selecciona_insumo(id, DESCRIPCION, PRECIO_UNIT) {
+    $('#COD_INSUMO_' + Global_lineaId).val(id);
+    $('#DESCRIPCION_' + Global_lineaId).html(DESCRIPCION);
+    $('#PRECIO_' + Global_lineaId).val(PRECIO_UNIT);
+
+    // Obtén la cantidad como número
+    var cantidad = parseFloat($('#CANTIDAD_' + Global_lineaId).val());
+
+    // Verifica si cantidad es un número válido
+    if (!isNaN(cantidad)) {
+        // Calcula el total y lo muestra en el campo TOTAL
+        var total = PRECIO_UNIT * cantidad;
+        $('#TOTAL_' + Global_lineaId).val(total);
+    } else {
+        // Si la cantidad no es un número válido, muestra un mensaje de error o realiza la lógica adecuada.
+        alert('La cantidad no es válida');
+    }
+
+    
+    $('#modal_insumo').modal('hide');
+
+}
+</script>
 
 @stop
