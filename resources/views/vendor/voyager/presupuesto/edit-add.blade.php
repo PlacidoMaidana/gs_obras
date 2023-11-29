@@ -97,11 +97,11 @@
                                         ],
                                         [
                                             'tab_id' => 'two',
-                                            'fields' => $dataTypeRows->slice(4, 4), // Aquí ajusta el número de campos que deseas en la solapa dos
+                                            'fields' => $dataTypeRows->slice(4, 8), // Aquí ajusta el número de campos que deseas en la solapa dos
                                         ],
                                         [
                                             'tab_id' => 'three',
-                                            'fields' => $dataTypeRows->slice(8), // Aquí ajusta el número de campos que deseas en la solapa tres
+                                            'fields' => $dataTypeRows->slice(12), // Aquí ajusta el número de campos que deseas en la solapa tres
                                         ],
                                     ]);
                                 @endphp
