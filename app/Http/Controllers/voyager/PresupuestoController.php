@@ -513,29 +513,7 @@ class PresupuestoController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $val = $this->validateBread($request->all(), $dataType->addRows)->validate();
         $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
 
-
-        //!<<<<<<<<<<<<<<<<<<<<<<<    TRABAJANDO LAS LINEAS   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
        
-        // Obtén las ID de las líneas de ítems a eliminar
-        $id=$data->id; //obtiene el id del registro recien incertado
-        $item = Item::find($id);
-       
-        $lineasAEliminar = array_diff($item->lineasItem->pluck('id')->toArray(), array_keys($request->input('lineas')));
-
-        // Elimina las líneas de ítems que ya no están asociadas
-        LineaItem::whereIn('id', $lineasAEliminar)->delete();
-
-        // Actualiza o crea las líneas de ítems asociadas
-        foreach ($request->input('lineas') as $lineaId => $lineaData) {
-            $linea = LineaItem::updateOrCreate(['id' => $lineaId],
-             ['CANTIDAD' => $lineaData['CANTIDAD'],  // Actualiza otros campos de la línea según sea necesario
-             'COD_INSUMO' => $lineaData['COD_INSUMO'], 
-             'COD_ITEMS' => $id,              
-             ]
-        
-        
-        );
-        }
 
         event(new BreadDataAdded($dataType, $data));
 
