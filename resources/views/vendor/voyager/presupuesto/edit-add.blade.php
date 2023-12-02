@@ -164,7 +164,7 @@
                                             <table class="table" id="Tabla_lineas">
                                                 <thead>
                                                     <tr>
-                                                        <th colspan="4">INSUMO</th>
+                                                        <th colspan="4">INSUMO NOMBRE</th>
                                                         <th colspan="2">CANTIDAD</th>
                                                         <th colspan="2">PRECIO</th>
                                                         <th colspan="2">TOTAL LINEA</th>
@@ -345,12 +345,12 @@
         // Asigna un identificador único a la fila basado en contadorLineas
         var nuevaFilaId = 'lineaId_' + contadorLineas;
         nuevaFila.id = nuevaFilaId;
-        nuevaFila.innerHTML = '        <td colspan="4">' +
+        nuevaFila.innerHTML = '<td colspan="4">' +
             '            <input  id="COD_INSUMO_' + contadorLineas + '" type="text" name="lineas[' + contadorLineas +
             '][COD_INSUMO]" value="" size="5">' +
             '            <a href="#"  onclick="elejir_insumo(' + contadorLineas + ')" class="btn btn-primary"> ' +
             '                <i class="voyager-search"></i>' +
-            '            </a> <span  id="DESCRIPCION_' + contadorLineas + '" class="large"></span>' +
+            '            </a> <input  type="text" id="DESCRIPCION_' + contadorLineas + '" name="lineas[' + contadorLineas +'][NOMBRE]" class="large">' +
             '        </td>' +
             '        <td colspan="2">' +
             '            <input  type="text" id="CANTIDAD_' + contadorLineas + '" name="lineas[' + contadorLineas +'][CANTIDAD]" value="">' +
@@ -474,7 +474,7 @@ $(document).ready(function() {
 
 function selecciona_insumo(id, DESCRIPCION, PRECIO_UNIT) {
     $('#COD_INSUMO_' + Global_lineaId).val(id);
-    $('#DESCRIPCION_' + Global_lineaId).html(DESCRIPCION);
+    $('#DESCRIPCION_' + Global_lineaId).val(DESCRIPCION);
     $('#PRECIO_' + Global_lineaId).val(PRECIO_UNIT);
 
     // Obtén la cantidad como número

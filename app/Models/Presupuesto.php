@@ -26,4 +26,11 @@ class Presupuesto extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function Items()
+    {
+        //return $this->hasMany(LineaItem::class);
+        return $this->hasMany('App\Models\ItemPresup', 'COD_PRESUP'); // Especifica el nombre de la columna de la clave foránea
+  
+    }
 }
