@@ -409,20 +409,17 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
        
         // Obtén las ID de las líneas de ítems a eliminar
         $item = Item::find($id);
-       // dd($item->lineasItem);
-        $lineasAEliminar = array_diff($item->lineasItem->pluck('id')->toArray(), array_keys($request->input('lineas')));
-
-        // Elimina las líneas de ítems que ya no están asociadas
-        LineaItem::whereIn('id', $lineasAEliminar)->delete();
+      
+        // Elimina todas las líneas de ítems asociadas al item
+        LineaItem::where('COD_ITEMS', $id)->delete();
 
         // Actualiza o crea las líneas de ítems asociadas
         foreach ($request->input('lineas') as $lineaId => $lineaData) {
-            $linea = LineaItem::updateOrCreate(['id' => $lineaId],
+            $linea = LineaItem::updateOrCreate(
              ['CANTIDAD' => $lineaData['CANTIDAD'],  // Actualiza otros campos de la línea según sea necesario
              'COD_INSUMO' => $lineaData['COD_INSUMO'], 
-             'COD_ITEMS' => $id,              
-             ]
-        
+             'COD_ITEMS' => $id,            
+             ]        
         
         );
         }
@@ -522,14 +519,9 @@ class ItemController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
         $id=$data->id; //obtiene el id del registro recien incertado
         $item = ItemPresup::find($id);
        
-        $lineasAEliminar = array_diff($item->lineasItem->pluck('id')->toArray(), array_keys($request->input('lineas')));
-
-        // Elimina las líneas de ítems que ya no están asociadas
-        LineaItemPresup::whereIn('id', $lineasAEliminar)->delete();
-
         // Actualiza o crea las líneas de ítems asociadas
         foreach ($request->input('lineas') as $lineaId => $lineaData) {
-            $linea = LineaItemPresup::updateOrCreate(['id' => $lineaId],
+            $linea = LineaItemPresup::updateOrCreate(
              ['CANTIDAD' => $lineaData['CANTIDAD'],  // Actualiza otros campos de la línea según sea necesario
              'COD_INSUMO' => $lineaData['COD_INSUMO'], 
              'COD_ITEMS' => $id,              

@@ -356,11 +356,11 @@ class PresupuestoController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             $view = "voyager::$slug.edit-add";
         }
 
-        $item = Item::find($id); // Obtén un item específico por su ID
+        $presupuesto = Presupuesto::find($id); // Obtén un item específico por su ID
         // Accede a las líneas de ítems asociadas a este item
-        $lineas = $item->lineasItem;
+        $itemPresup = $presupuesto->Items;
         //dd($lineas[0]->insumo->DESCRIPCION);
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'item', 'lineas'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'itemPresup'));
     }
 
     // POST BR(E)AD
@@ -405,26 +405,27 @@ class PresupuestoController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $this->insertUpdateData($request, $slug, $dataType->editRows, $data);
 
 //!<<<<<<<<<<<<<<<<<<<<<<<    TRABAJANDO LAS LINEAS   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+       // Obtén las ID de las líneas de ítems a eliminar
+       $presup = Item::find($id);
+      
+       // Elimina todas las líneas de ítems asociadas al item
+       ItemPresup::where('COD_ITEMS', $id)->delete();
        
-        // Obtén las ID de las líneas de ítems a eliminar
-        $item = Item::find($id);
-       // dd($item->lineasItem);
-        $lineasAEliminar = array_diff($item->lineasItem->pluck('id')->toArray(), array_keys($request->input('lineas')));
-
-        // Elimina las líneas de ítems que ya no están asociadas
-        LineaItem::whereIn('id', $lineasAEliminar)->delete();
+   
 
         // Actualiza o crea las líneas de ítems asociadas
         foreach ($request->input('lineas') as $lineaId => $lineaData) {
-            $linea = LineaItem::updateOrCreate(['id' => $lineaId],
-             ['CANTIDAD' => $lineaData['CANTIDAD'],  // Actualiza otros campos de la línea según sea necesario
-             'COD_INSUMO' => $lineaData['COD_INSUMO'], 
-             'COD_ITEMS' => $id,              
-             ]
-        
-        
-        );
-        }
+            $codItem = ($lineaData['COD_INSUMO'] === null) ? 1 : $lineaData['COD_INSUMO'];
+            $linea = ItemPresup::updateOrCreate(
+            ['CANTIDAD' => $lineaData['CANTIDAD'],  // Actualiza otros campos de la línea según sea necesario
+            'COD_ITEMS' => $codItem, 
+            'IMPORTE' => $lineaData['PRECIO_UNIT'], 
+            'NOMBRE' => $lineaData['NOMBRE'], 
+            'COD_PRESUP' => $id,              
+            ]      
+       
+       );
+       }
 
         // Delete Images
         $this->deleteBreadImages($original_data, $to_remove);
@@ -514,30 +515,28 @@ class PresupuestoController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $val = $this->validateBread($request->all(), $dataType->addRows)->validate();
         $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
 
+        //dd($data->id );
+
          //!<<<<<<<<<<<<<<<<<<<<<<<    TRABAJANDO LAS LINEAS   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
        
         // Obtén las ID de las líneas de ítems a eliminar
         $id=$data->id; //obtiene el id del registro recien incertado
         $presup = Presupuesto::find($id);
        
-        $lineasAEliminar = array_diff($presup->Items->pluck('id')->toArray(), array_keys($request->input('lineas')));
-
-        // Elimina las líneas de ítems que ya no están asociadas
-        ItemPresup::whereIn('id', $lineasAEliminar)->delete();
 
         // Actualiza o crea las líneas de ítems asociadas
         foreach ($request->input('lineas') as $lineaId => $lineaData) {
-             $codItem = ($lineaData['COD_INSUMO'] === null) ? 1 : $lineaData['COD_INSUMO'];
-             $linea = ItemPresup::updateOrCreate(['id' => $lineaId],
-             ['CANTIDAD' => $lineaData['CANTIDAD'],  // Actualiza otros campos de la línea según sea necesario
-             'COD_ITEMS' => $codItem, 
-             'NOMBRE' => $lineaData['NOMBRE'], 
-             'COD_PRESUP' => $id,              
-             ]
-        
-        
-        );
-        }
+            $codItem = ($lineaData['COD_INSUMO'] === null) ? 1 : $lineaData['COD_INSUMO'];
+            $linea = ItemPresup::updateOrCreate(
+            ['CANTIDAD' => $lineaData['CANTIDAD'],  // Actualiza otros campos de la línea según sea necesario
+            'COD_ITEMS' => $codItem, 
+            'IMPORTE' => $lineaData['PRECIO_UNIT'], 
+            'NOMBRE' => $lineaData['NOMBRE'], 
+            'COD_PRESUP' => $id,              
+            ]      
+       
+       );
+       }
        
 
         event(new BreadDataAdded($dataType, $data));

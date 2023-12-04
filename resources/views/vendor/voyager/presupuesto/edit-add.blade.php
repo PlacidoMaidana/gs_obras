@@ -153,6 +153,81 @@
                                 <?php $contadorLineas = 0; ?> {{-- Usare la variable para contar las lineas de item, tanto en nuevo como update --}}
                                 @if ($edit)
                                     <!-- Tabla para mostrar las líneas de ítems -->
+                                    <h1>ESTO ES UN NUEVO ITEM</h1>
+                                    <!-- Tabla para mostrar las líneas de ítems -->
+                                    <a href="#" class="btn btn-primary" onclick="nueva_linea()">
+                                        <i class="voyager-list-add"></i>
+                                    </a>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <table class="table" id="Tabla_lineas">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="4">INSUMO NOMBRE</th>
+                                                        <th colspan="2">CANTIDAD</th>
+                                                        <th colspan="2">PRECIO</th>
+                                                        <th colspan="2">TOTAL LINEA</th>
+                                                        <th colspan="2"></th>
+
+                                                        <!-- Otros encabezados de la tabla según tus necesidades -->
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                    @foreach ( $itemPresup as $linea)
+                                                    <tr id="lineaId_{{  $contadorLineas }}">
+                                                    {{-- <tr id="lineaId_{{ $linea->id }}"> --}}
+                                                        <td colspan="4">
+                                                            <input id="COD_INSUMO_{{  $contadorLineas }}" type="text"
+                                                                name="lineas[{{  $contadorLineas }}][COD_INSUMO]"
+                                                                value="{{ $linea->COD_INSUMO }}" size="5">
+                                                            <a href="#" onclick="elejir_insumo({{  $contadorLineas }})"
+                                                                class="btn btn-primary">
+                                                                <i class="voyager-search"></i>
+                                                            </a> 
+                                                            <input type="text" id="DESCRIPCION_{{$contadorLineas}}" name="lineas[{{  $contadorLineas }}][NOMBRE]" value="{{$linea->NOMBRE}}">
+                                                             
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <input type="text" id="CANTIDAD_{{$contadorLineas}}" name="lineas[{{  $contadorLineas }}][CANTIDAD]"
+                                                                value="{{ $linea->CANTIDAD }}">
+                                                        </td>
+                                                        <td colspan="2">
+    
+                                                            <input type="text" id="PRECIO_{{$contadorLineas}}" name="lineas[{{  $contadorLineas }}][PRECIO_UNIT]" value="{{$linea->IMPORTE}}" >
+                                                               
+                                                        </td>
+                                                            
+                                                        <td colspan="2">
+    
+                                                            <input type="text" id="TOTAL_{{$contadorLineas}}" name="lineas[{{  $contadorLineas }}][TOTAL]"
+                                                                value="{{$linea->IMPORTE* $linea->CANTIDAD }}"  >
+                                                              
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <!-- Botones de acción -->
+                                                            <!-- Botón de eliminación -->
+                                                            <a href="#" class="btn btn-danger"
+                                                                onclick="eliminarLinea({{  $contadorLineas }})">
+                                                                <i class="voyager-trash"></i>
+                                                            </a>
+    
+                                                            <a href="#" class="btn btn-primary" onclick="nueva_linea()">
+                                                                <i class="voyager-list-add"></i>
+                                                            </a>
+                                                            <?php $contadorLineas++;
+                                                            
+                                                            ?>
+                                                            <!-- Aquí puedes agregar los botones de acción ocupando 2 columnas -->
+                                                        </td>
+                                                        <!-- Otros campos de la línea según tus necesidades -->
+                                                    </tr>
+                                                   
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 @else
                                     <h1>ESTO ES UN NUEVO ITEM</h1>
                                     <!-- Tabla para mostrar las líneas de ítems -->

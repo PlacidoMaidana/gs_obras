@@ -107,6 +107,9 @@
                         <?php $contadorLineas = 0; ?> {{-- Usare la variable para contar las lineas de item, tanto en nuevo como update --}}
                         @if ($edit)
                             <!-- Tabla para mostrar las líneas de ítems -->
+                            <a href="#" class="btn btn-primary" onclick="nueva_linea()">
+                                <i class="voyager-list-add"></i>
+                             </a>
 
                             <div class="row">
                                 <div class="col-12">
